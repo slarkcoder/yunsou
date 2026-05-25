@@ -272,22 +272,11 @@ fun SettingsScreen(
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Row(horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = "Slark",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://slarker.me/"))
-                        context.startActivity(intent)
-                    }
-                )
-                Text(
-                    text = " / 版本 $versionName",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
-            }
+            Text(
+                text = "版本 $versionName",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline
+            )
         }
     }
 }

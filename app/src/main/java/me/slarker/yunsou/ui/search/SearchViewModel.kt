@@ -60,7 +60,8 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(
         SearchUiState(
             baseUrl = prefs.getBaseUrl(),
-            searchHistory = prefs.getSearchHistory()
+            searchHistory = prefs.getSearchHistory(),
+            selectedCloudTypes = prefs.getCloudTypes()
         )
     )
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
@@ -75,6 +76,7 @@ class SearchViewModel @Inject constructor(
                 state.selectedCloudTypes - type
             else
                 state.selectedCloudTypes + type
+            prefs.setCloudTypes(next)
             state.copy(selectedCloudTypes = next)
         }
     }

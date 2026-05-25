@@ -2,6 +2,7 @@ package me.slarker.yunsou.data.local
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import me.slarker.yunsou.data.model.CloudType
 import me.slarker.yunsou.ui.search.ServerStatus
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -62,12 +63,26 @@ class PreferencesManager @Inject constructor(
             .apply()
     }
 
+    fun getCloudTypes(): Set<CloudType> {
+        val raw = prefs.getString(KEY_CLOUD_TYPES, null) ?: return CloudType.defaultSet()
+        return raw.split("|")
+            .mapNotNull { name -> CloudType.entries.find { it.apiName == name } }
+            .toSet()
+            .ifEmpty { CloudType.defaultSet() }
+    }
+
+    fun setCloudTypes(types: Set<CloudType>) {
+        val raw = types.joinToString("|") { it.apiName }
+        prefs.edit().putString(KEY_CLOUD_TYPES, raw).apply()
+    }
+
     companion object {
         const val DEFAULT_BASE_URL = "https://pan.slarker.me/"
         private const val KEY_BASE_URL = "base_url"
         private const val KEY_SEARCH_HISTORY = "search_history"
         private const val KEY_SERVER_STATUS = "server_status"
         private const val KEY_SERVER_STATUS_TIME = "server_status_time"
+        private const val KEY_CLOUD_TYPES = "cloud_types"
         private const val MAX_HISTORY = 10
         private const val STATUS_CACHE_DURATION_MS = 3600_000L // 1 hour
     }

@@ -433,6 +433,10 @@ private fun SearchTab(
                                             item = item,
                                             linkState = uiState.linkCheckResults[item.url],
                                             onClick = {
+                                                // 115 自动复制链接
+                                                if (cloudType == CloudType.CLOUD_115) {
+                                                    copyToClipboard(context, item.url, "链接已复制")
+                                                }
                                                 val uri = Uri.parse(item.url)
                                                 val pm = context.packageManager
                                                 // 1. Try cloud app that can handle the URL directly
