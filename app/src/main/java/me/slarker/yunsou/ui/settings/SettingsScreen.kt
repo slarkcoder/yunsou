@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.slarker.yunsou.data.model.CloudType
 import me.slarker.yunsou.ui.search.ServerStatus
+import me.slarker.yunsou.ui.search.UpdateStatus
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -41,6 +42,11 @@ fun SettingsScreen(
     onBaseUrlChange: (String) -> Unit,
     onClearCache: () -> Unit,
     serverStatus: ServerStatus,
+    updateStatus: UpdateStatus,
+    latestVersion: String?,
+    releaseUrl: String?,
+    releaseNotes: String?,
+    onCheckUpdate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -158,6 +164,72 @@ fun SettingsScreen(
             Toast.makeText(context, "缓存已清理", Toast.LENGTH_SHORT).show()
         }) {
             Text("清理缓存")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "版本更新",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
+        ) {
+            when (updateStatus) {
+                UpdateStatus.UNCHECKED -> {
+                    OutlinedButton(onClick = onCheckUpdate) {
+                        Text("检测更新")
+                    }
+                }
+                UpdateStatus.CHECKING -> {
+                    Text(
+                        text = "● 检测中...",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                UpdateStatus.AVAILABLE -> {
+                    Text(
+                        text = "● 发现新版本 $latestVersion",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF4CAF50)
+                    )
+                }
+                UpdateStatus.UNAVAILABLE -> {
+                    Text(
+                        text = "● 已是最新版本",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                UpdateStatus.ERROR -> {
+                    Text(
+                        text = "● 检测失败",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+        if (!releaseNotes.isNullOrBlank() && updateStatus == UpdateStatus.AVAILABLE) {
+            Text(
+                text = releaseNotes,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.padding(bottom = 4.dp),
+                maxLines = 5
+            )
+        }
+        if (updateStatus == UpdateStatus.AVAILABLE && releaseUrl != null) {
+            OutlinedButton(onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(releaseUrl))
+                context.startActivity(intent)
+            }) {
+                Text("前往下载")
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))

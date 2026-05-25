@@ -93,7 +93,8 @@ fun SearchScreen(
     onBaseUrlChange: (String) -> Unit,
     onSearchHistoryItemClick: (String) -> Unit,
     onClearCache: () -> Unit,
-    onCheckServerStatus: () -> Unit
+    onCheckServerStatus: () -> Unit,
+    onCheckUpdate: () -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -105,10 +106,11 @@ fun SearchScreen(
     var overlayColor by remember { mutableStateOf(Color(0xFF121212)) }
     val revealProgress = remember { Animatable(0f) }
 
-    // 切换到设置页时自动检测服务器状态
+    // 切换到设置页时自动检测服务器状态和版本更新
     LaunchedEffect(uiState.currentTab) {
         if (uiState.currentTab == 1) {
             onCheckServerStatus()
+            onCheckUpdate()
         }
     }
 
@@ -198,6 +200,11 @@ fun SearchScreen(
                         onBaseUrlChange = onBaseUrlChange,
                         onClearCache = onClearCache,
                         serverStatus = uiState.serverStatus,
+                        updateStatus = uiState.updateStatus,
+                        latestVersion = uiState.latestVersion,
+                        releaseUrl = uiState.releaseUrl,
+                        releaseNotes = uiState.releaseNotes,
+                        onCheckUpdate = onCheckUpdate,
                         modifier = Modifier.padding(paddingValues)
                     )
                 }
@@ -469,6 +476,11 @@ private fun SettingsTab(
     onBaseUrlChange: (String) -> Unit,
     onClearCache: () -> Unit,
     serverStatus: ServerStatus,
+    updateStatus: UpdateStatus,
+    latestVersion: String?,
+    releaseUrl: String?,
+    releaseNotes: String?,
+    onCheckUpdate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     SettingsScreen(
@@ -478,6 +490,11 @@ private fun SettingsTab(
         onBaseUrlChange = onBaseUrlChange,
         onClearCache = onClearCache,
         serverStatus = serverStatus,
+        updateStatus = updateStatus,
+        latestVersion = latestVersion,
+        releaseUrl = releaseUrl,
+        releaseNotes = releaseNotes,
+        onCheckUpdate = onCheckUpdate,
         modifier = modifier
     )
 }

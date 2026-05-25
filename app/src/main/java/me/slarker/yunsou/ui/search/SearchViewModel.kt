@@ -2,6 +2,9 @@ package me.slarker.yunsou.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import me.slarker.yunsou.data.api.dto.GithubRelease
 import me.slarker.yunsou.data.api.dto.LinkCheckItem
 import me.slarker.yunsou.data.local.CacheManager
 import me.slarker.yunsou.data.local.PreferencesManager
@@ -24,6 +27,7 @@ import kotlinx.coroutines.sync.Semaphore
 import javax.inject.Inject
 
 enum class ServerStatus { UNKNOWN, CHECKING, ONLINE, OFFLINE }
+enum class UpdateStatus { UNCHECKED, CHECKING, AVAILABLE, UNAVAILABLE, ERROR }
 
 data class SearchUiState(
     val query: String = "",
@@ -38,14 +42,19 @@ data class SearchUiState(
     val currentTab: Int = 0,
     val baseUrl: String = PreferencesManager.DEFAULT_BASE_URL,
     val searchHistory: List<String> = emptyList(),
-    val serverStatus: ServerStatus = ServerStatus.UNKNOWN
+    val serverStatus: ServerStatus = ServerStatus.UNKNOWN,
+    val updateStatus: UpdateStatus = UpdateStatus.UNCHECKED,
+    val latestVersion: String? = null,
+    val releaseUrl: String? = null,
+    val releaseNotes: String? = null
 )
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: SearchRepository,
     private val prefs: PreferencesManager,
-    private val cache: CacheManager
+    private val cache: CacheManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -150,6 +159,56 @@ class SearchViewModel @Inject constructor(
 
     fun clearCache() {
         cache.clearAll()
+    }
+
+    fun checkUpdate() {
+        if (_uiState.value.updateStatus == UpdateStatus.CHECKING) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(updateStatus = UpdateStatus.CHECKING) }
+            repository.checkUpdate()
+                .onSuccess { release ->
+                    val latestTag = release.tag_name.trimStart('v')
+                    val current = try {
+                        context.packageManager.getPackageInfo(context.packageName, 0).versionName
+                            ?: "1.0.0"
+                    } catch (_: Exception) {
+                        "1.0.0"
+                    }
+                    val hasUpdate = compareVersion(latestTag, current) > 0
+                    _uiState.update {
+                        it.copy(
+                            updateStatus = if (hasUpdate) UpdateStatus.AVAILABLE else UpdateStatus.UNAVAILABLE,
+                            latestVersion = release.tag_name,
+                            releaseUrl = release.html_url,
+                            releaseNotes = release.body
+                        )
+                    }
+                }
+                .onFailure { e ->
+                    val status = if (e is me.slarker.yunsou.data.repository.NoReleaseException)
+                        UpdateStatus.UNAVAILABLE
+                    else
+                        UpdateStatus.ERROR
+                    _uiState.update { it.copy(updateStatus = status) }
+                }
+        }
+    }
+
+    fun dismissUpdate() {
+        _uiState.update { it.copy(updateStatus = UpdateStatus.UNCHECKED) }
+    }
+
+    /** 简单语义化版本比较，返回 >0 表示 v1 > v2 */
+    private fun compareVersion(v1: String, v2: String): Int {
+        val parts1 = v1.split(".").map { it.toIntOrNull() ?: 0 }
+        val parts2 = v2.split(".").map { it.toIntOrNull() ?: 0 }
+        val maxLen = maxOf(parts1.size, parts2.size)
+        for (i in 0 until maxLen) {
+            val p1 = parts1.getOrElse(i) { 0 }
+            val p2 = parts2.getOrElse(i) { 0 }
+            if (p1 != p2) return p1 - p2
+        }
+        return 0
     }
 
     fun checkServerStatus() {

@@ -15,14 +15,23 @@ android {
         applicationId = "me.slarker.yunsou"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug") // 临时使用 debug 签名，正式发布需替换
+        }
+    }
+
+    applicationVariants.all {
+        val variant = this
+        outputs.all {
+            val name = "yunsou_${variant.versionName}.apk"
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = name
         }
     }
 

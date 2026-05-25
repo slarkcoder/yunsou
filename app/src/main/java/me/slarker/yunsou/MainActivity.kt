@@ -29,7 +29,8 @@ class MainActivity : ComponentActivity() {
                 onBaseUrlChange = viewModel::onBaseUrlChange,
                 onSearchHistoryItemClick = viewModel::onSearchHistoryItemClick,
                 onClearCache = viewModel::clearCache,
-                onCheckServerStatus = viewModel::checkServerStatus
+                onCheckServerStatus = viewModel::checkServerStatus,
+                onCheckUpdate = viewModel::checkUpdate
             )
         }
     }
