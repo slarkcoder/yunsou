@@ -18,6 +18,6 @@ enum class CloudType(val apiName: String, val displayName: String, val packageNa
             entries.find { it.apiName == name }
 
         fun defaultSet(): Set<CloudType> =
-            setOf(BAIDU, ALIYUN, QUARK, TIANYI, UC)
+            setOf(QUARK)
     }
 }
