@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <queries>
+        <package android:name="com.baidu.netdisk" />
+        <package android:name="com.alicloud.databox" />
+        <package android:name="com.quark.clouddrive" />
+        <package android:name="com.quark.browser" />
+        <package android:name="com.cn21.ecloud" />
+        <package android:name="com.UCMobile" />
+        <package android:name="com.xunlei.downloadprovider" />
+        <package android:name="com.chinamobile.mcloud" />
+        <package android:name="com.yyw.wangpan" />
+        <package android:name="com.mfcloudcalculate.networkdisk" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".PanSouApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="云搜"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PanSou">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

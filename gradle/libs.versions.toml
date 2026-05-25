@@ -1,0 +1,41 @@
+[versions]
+agp = "8.5.2"
+kotlin = "2.0.0"
+kse = "1.7.1"
+composeBom = "2024.06.00"
+hilt = "2.51.1"
+hiltCompose = "1.2.0"
+retrofit = "2.11.0"
+okhttp = "4.12.0"
+lifecycle = "2.8.3"
+coreKtx = "1.13.1"
+activityCompose = "1.9.1"
+
+[libraries]
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttpLogging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kse" }
+retrofitKotlinxSerialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
+hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hiltCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompose" }
+composeBom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+ui = { module = "androidx.compose.ui:ui" }
+uiGraphics = { module = "androidx.compose.ui:ui-graphics" }
+uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview" }
+uiTooling = { module = "androidx.compose.ui:ui-tooling" }
+material3 = { module = "androidx.compose.material3:material3" }
+materialIcons = { module = "androidx.compose.material:material-icons-extended" }
+activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+lifecycleViewmodelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycleRuntimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+coreKtx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version = "2.0.0-1.0.21" }
