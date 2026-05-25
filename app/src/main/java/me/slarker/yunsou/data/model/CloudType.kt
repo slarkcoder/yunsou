@@ -11,9 +11,7 @@ enum class CloudType(val apiName: String, val displayName: String, val packageNa
     GUANGYA("guangya", "光照", emptyList()),
     MOBILE("mobile", "移动", listOf("com.chinamobile.mcloud")),
     CLOUD_115("115", "115", listOf("com.yyw.wangpan")),
-    CLOUD_123("123", "123", listOf("com.mfcloudcalculate.networkdisk")),
-    MAGNET("magnet", "磁力链接", emptyList()),
-    ED2K("ed2k", "电驴", emptyList());
+    CLOUD_123("123", "123", listOf("com.mfcloudcalculate.networkdisk"));
 
     companion object {
         fun fromApiName(name: String): CloudType? =
