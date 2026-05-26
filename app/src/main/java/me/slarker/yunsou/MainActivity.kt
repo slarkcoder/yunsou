@@ -30,7 +30,8 @@ class MainActivity : ComponentActivity() {
                 onSearchHistoryItemClick = viewModel::onSearchHistoryItemClick,
                 onClearCache = viewModel::clearCache,
                 onCheckServerStatus = viewModel::checkServerStatus,
-                onCheckUpdate = viewModel::checkUpdate
+                onCheckUpdate = viewModel::checkUpdate,
+                onThemeToggle = viewModel::onThemeToggle
             )
         }
     }

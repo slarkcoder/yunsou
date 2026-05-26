@@ -76,6 +76,12 @@ class PreferencesManager @Inject constructor(
         prefs.edit().putString(KEY_CLOUD_TYPES, raw).apply()
     }
 
+    fun isDarkTheme(): Boolean = prefs.getBoolean(KEY_DARK_THEME, true)
+
+    fun setDarkTheme(dark: Boolean) {
+        prefs.edit().putBoolean(KEY_DARK_THEME, dark).apply()
+    }
+
     companion object {
         const val DEFAULT_BASE_URL = "https://pan.slarker.me/"
         private const val KEY_BASE_URL = "base_url"
@@ -83,6 +89,7 @@ class PreferencesManager @Inject constructor(
         private const val KEY_SERVER_STATUS = "server_status"
         private const val KEY_SERVER_STATUS_TIME = "server_status_time"
         private const val KEY_CLOUD_TYPES = "cloud_types"
+        private const val KEY_DARK_THEME = "dark_theme"
         private const val MAX_HISTORY = 10
         private const val STATUS_CACHE_DURATION_MS = 3600_000L // 1 hour
     }

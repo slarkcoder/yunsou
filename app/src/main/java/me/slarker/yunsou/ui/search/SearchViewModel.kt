@@ -46,7 +46,8 @@ data class SearchUiState(
     val updateStatus: UpdateStatus = UpdateStatus.UNCHECKED,
     val latestVersion: String? = null,
     val releaseUrl: String? = null,
-    val releaseNotes: String? = null
+    val releaseNotes: String? = null,
+    val isDarkTheme: Boolean = true
 )
 
 @HiltViewModel
@@ -61,7 +62,8 @@ class SearchViewModel @Inject constructor(
         SearchUiState(
             baseUrl = prefs.getBaseUrl(),
             searchHistory = prefs.getSearchHistory(),
-            selectedCloudTypes = prefs.getCloudTypes()
+            selectedCloudTypes = prefs.getCloudTypes(),
+            isDarkTheme = prefs.isDarkTheme()
         )
     )
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
@@ -79,6 +81,11 @@ class SearchViewModel @Inject constructor(
             prefs.setCloudTypes(next)
             state.copy(selectedCloudTypes = next)
         }
+    }
+
+    fun onThemeToggle(isDark: Boolean) {
+        prefs.setDarkTheme(isDark)
+        _uiState.update { it.copy(isDarkTheme = isDark) }
     }
 
     fun onTabChange(tab: Int) {

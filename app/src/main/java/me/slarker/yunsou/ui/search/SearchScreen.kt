@@ -9,7 +9,9 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -94,17 +96,19 @@ fun SearchScreen(
     onSearchHistoryItemClick: (String) -> Unit,
     onClearCache: () -> Unit,
     onCheckServerStatus: () -> Unit,
-    onCheckUpdate: () -> Unit
+    onCheckUpdate: () -> Unit,
+    onThemeToggle: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var isDarkTheme by remember { mutableStateOf(true) }
     var revealCenter by remember { mutableStateOf<Offset?>(null) }
     var isRevealing by remember { mutableStateOf(false) }
     var darkBg by remember { mutableStateOf(Color(0xFF121212)) }
     var lightBg by remember { mutableStateOf(Color.White) }
     var overlayColor by remember { mutableStateOf(Color(0xFF121212)) }
     val revealProgress = remember { Animatable(0f) }
+
+    val isDarkTheme = uiState.isDarkTheme
 
     // 切换到设置页时自动检测服务器状态和版本更新
     LaunchedEffect(uiState.currentTab) {
@@ -141,7 +145,7 @@ fun SearchScreen(
                                 if (isRevealing) return@IconButton
                                 isRevealing = true
                                 overlayColor = if (isDarkTheme) darkBg else lightBg
-                                isDarkTheme = !isDarkTheme
+                                onThemeToggle(!isDarkTheme)
                                 scope.launch {
                                     revealProgress.snapTo(0f)
                                     revealProgress.animateTo(
@@ -273,7 +277,10 @@ private fun SearchTab(
         else ((maxH - groupHeightDp.value) / 2f).coerceAtLeast(0f).dp
         val topSpacer by animateDpAsState(
             targetValue = spacerTarget,
-            animationSpec = tween(500, easing = FastOutSlowInEasing),
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            ),
             label = "searchBarPosition"
         )
 
@@ -457,6 +464,9 @@ private fun SearchTab(
                                                 try {
                                                     context.startActivity(intent)
                                                 } catch (_: Exception) {}
+                                            },
+                                            onLongClick = {
+                                                copyToClipboard(context, item.url, "链接已复制")
                                             }
                                         )
                                     }
