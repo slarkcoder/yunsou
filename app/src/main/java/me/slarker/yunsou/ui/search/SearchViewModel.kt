@@ -251,7 +251,7 @@ class SearchViewModel @Inject constructor(
         }
 
         coroutineScope {
-            val semaphore = Semaphore(5)
+            val semaphore = Semaphore(10)
             checkItems.map { item ->
                 async {
                     semaphore.acquire()
