@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,12 +35,22 @@ fun SearchBar(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch() }),
         trailingIcon = {
-            IconButton(onClick = onSearch) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "搜索",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            if (query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "清空",
+                        tint = MaterialTheme.colorScheme.outline
+                    )
+                }
+            } else {
+                IconButton(onClick = onSearch) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "搜索",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         },
         modifier = modifier
